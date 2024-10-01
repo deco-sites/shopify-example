@@ -36,8 +36,8 @@ export const loader = async (props: Props, req: Request, ctx: AppContext) => {
     return {
       ...props,
       page: {
-        products: [],
         ...props.page,
+        products: [],
       },
       url: req.url,
     };
@@ -53,8 +53,8 @@ export const loader = async (props: Props, req: Request, ctx: AppContext) => {
   return {
     ...props,
     page: {
-      products: favoritedProducts,
       ...props.page,
+      products: favoritedProducts,
     },
     url: req.url,
   };
