@@ -72,8 +72,12 @@ async function action(
           ),
         );
 
+      const response = await (ctx as unknown as AppContext).invoke(
+        "site/loaders/get-my-wishlist.ts",
+      );
+
       return {
-        productIDs: [],
+        productIDs: response.map((item) => item.productSku),
       };
     }
 
@@ -83,8 +87,12 @@ async function action(
       addedAt: new Date().toString(),
     });
 
+    const response = await (ctx as unknown as AppContext).invoke(
+      "site/loaders/get-my-wishlist.ts",
+    );
+
     return {
-      productIDs: [],
+      productIDs: response.map((item) => item.productSku),
     };
   }
 

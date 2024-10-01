@@ -12,6 +12,7 @@ import Drawer from "../ui/Drawer.tsx";
 import Sort from "./Sort.tsx";
 import { useDevice, useScript, useSection } from "@deco/deco/hooks";
 import { type SectionProps } from "@deco/deco";
+
 export interface Layout {
   /**
    * @title Pagination
@@ -28,6 +29,7 @@ export interface Props {
   /** @hidden */
   partial?: "hideMore" | "hideLess";
 }
+
 function NotFound() {
   return (
     <div class="w-full flex justify-center items-center py-10">

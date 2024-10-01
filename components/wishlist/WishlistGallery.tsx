@@ -1,10 +1,15 @@
+import { AppContext } from "../../apps/site.ts";
 import SearchResult, {
   Props as SearchResultProps,
 } from "../search/SearchResult.tsx";
 import { type SectionProps } from "@deco/deco";
+
 export type Props = SearchResultProps;
-function WishlistGallery(props: SectionProps<typeof loader>) {
-  const isEmpty = !props.page || props.page.products.length === 0;
+
+function WishlistGallery(props: Awaited<SectionProps<typeof loader>>) {
+  const isEmpty = !props.page || !props.page.products ||
+    props.page.products.length === 0;
+
   if (isEmpty) {
     return (
       <div class="container mx-4 sm:mx-auto">
@@ -18,12 +23,41 @@ function WishlistGallery(props: SectionProps<typeof loader>) {
       </div>
     );
   }
+
   return <SearchResult {...props} />;
 }
-export const loader = (props: Props, req: Request) => {
+
+export const loader = async (props: Props, req: Request, ctx: AppContext) => {
+  const response = await (ctx as unknown as AppContext).invoke(
+    "site/loaders/get-my-wishlist.ts",
+  );
+
+  if (!response || response.length === 0) {
+    return {
+      ...props,
+      page: {
+        products: [],
+        ...props.page,
+      },
+      url: req.url,
+    };
+  }
+
+  const favoritedIds = response.map((item) => item.productSku);
+
+  const favoritedProducts =
+    props.page?.products.filter((item) =>
+      favoritedIds.includes(item.productID)
+    ) ?? [];
+
   return {
     ...props,
+    page: {
+      products: favoritedProducts,
+      ...props.page,
+    },
     url: req.url,
   };
 };
+
 export default WishlistGallery;

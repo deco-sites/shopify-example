@@ -11,6 +11,21 @@
     {
       "__resolveType": "website/sections/Rendering/Lazy.tsx",
       "section": {
+        "__resolveType": "site/sections/Product/Wishlist.tsx",
+        "page": {
+          "__resolveType": "shopify/loaders/ProductListingPage.ts",
+          "count": 20,
+          "query": "a"
+        },
+        "layout": {
+          "pagination": "show-more"
+        },
+        "startingPage": 0
+      }
+    },
+    {
+      "__resolveType": "website/sections/Rendering/Lazy.tsx",
+      "section": {
         "__resolveType": "site/sections/Newsletter/Newsletter.tsx",
         "label": "Sign up",
         "placeholder": "Email address",
