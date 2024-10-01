@@ -4343,9 +4343,6 @@ details.collapse summary::-webkit-details-marker {
 .rounded-md {
   border-radius: 0.375rem;
 }
-.rounded-sm {
-  border-radius: 0.125rem;
-}
 .rounded-l {
   border-top-left-radius: 0.25rem;
   border-bottom-left-radius: 0.25rem;

@@ -1,8 +1,11 @@
 import { type AppContext } from "../../apps/site.ts";
 import { type Wishlist } from "../../components/wishlist/Provider.tsx";
 import { usePlatform } from "../../sdk/usePlatform.tsx";
+import type { AppContext as RecordsApp } from "../../apps/deco/records.ts";
 
 import { AppContext as AppContextVTEX } from "apps/vtex/mod.ts";
+import { wishlists } from "../../db/schema.ts";
+import { and, eq } from "drizzle-orm";
 
 interface Props {
   productID: string;
@@ -12,7 +15,7 @@ interface Props {
 async function action(
   props: Props,
   _req: Request,
-  ctx: AppContext,
+  ctx: AppContext & RecordsApp,
 ): Promise<Wishlist> {
   const { productID, productGroupID } = props;
   const platform = usePlatform();
@@ -42,6 +45,47 @@ async function action(
         productIDs: list.map((item) => item.sku),
       };
     }
+  }
+
+  if (platform === "shopify") {
+    const drizzle = await ctx.invoke("records/loaders/drizzle.ts");
+
+    const email = "yuri.andrade@go-allfa.com";
+
+    const recs = await drizzle
+      .select()
+      .from(wishlists)
+      .where(
+        and(
+          eq(wishlists.userEmail, email),
+          eq(wishlists.productSku, productID),
+        ),
+      );
+
+    if (recs.length) {
+      await drizzle
+        .delete(wishlists)
+        .where(
+          and(
+            eq(wishlists.userEmail, email),
+            eq(wishlists.productSku, productID),
+          ),
+        );
+
+      return {
+        productIDs: [],
+      };
+    }
+
+    await drizzle.insert(wishlists).values({
+      userEmail: email,
+      productSku: productID,
+      addedAt: new Date().toString(),
+    });
+
+    return {
+      productIDs: [],
+    };
   }
 
   throw new Error(`Unsupported platform: ${platform}`);

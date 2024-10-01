@@ -4,10 +4,12 @@ import { useId } from "../../sdk/useId.ts";
 import { useSendEvent } from "../../sdk/useSendEvent.ts";
 import Icon from "../ui/Icon.tsx";
 import { useScript } from "@deco/deco/hooks";
+
 interface Props {
   variant?: "full" | "icon";
   item: AnalyticsItem;
 }
+
 const onLoad = (id: string, productID: string) =>
   window.STOREFRONT.WISHLIST.subscribe((sdk) => {
     const button = document.getElementById(id) as HTMLButtonElement;
@@ -23,9 +25,13 @@ const onLoad = (id: string, productID: string) =>
       span.innerHTML = inWishlist ? "Remove from wishlist" : "Add to wishlist";
     }
   });
+
 const onClick = (productID: string, productGroupID: string) => {
   const button = event?.currentTarget as HTMLButtonElement;
-  const user = window.STOREFRONT.USER.getUser();
+  const user = {
+    email: "yuri.andrade@go-allfa.com",
+  };
+
   if (user?.email) {
     button.classList.add("htmx-request");
     window.STOREFRONT.WISHLIST.toggle(productID, productGroupID);
@@ -33,6 +39,7 @@ const onClick = (productID: string, productGroupID: string) => {
     window.alert(`Please login to add the product to your wishlist`);
   }
 };
+
 function WishlistButton({ item, variant = "full" }: Props) {
   // deno-lint-ignore no-explicit-any
   const productID = (item as any).item_id;
@@ -62,11 +69,14 @@ function WishlistButton({ item, variant = "full" }: Props) {
         )}
       >
         <Icon id="favorite" class="[.htmx-request_&]:hidden" fill="none" />
+
         {variant === "full" && (
           <span class="[.htmx-request_&]:hidden">Add to wishlist</span>
         )}
+
         <span class="[.htmx-request_&]:inline hidden loading loading-spinner" />
       </button>
+
       <script
         type="module"
         dangerouslySetInnerHTML={{ __html: useScript(onLoad, id, productID) }}

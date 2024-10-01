@@ -31,9 +31,14 @@ async function loader(
       productIDs: response.map((item) => item.productId),
     };
   }
+
   if (platform === "shopify") {
+    const response = await (ctx as unknown as AppContext).invoke(
+      "site/loaders/get-my-wishlist.ts",
+    );
+
     return {
-      productIDs: [],
+      productIDs: response.map((item) => item.productSku),
     };
   }
 
